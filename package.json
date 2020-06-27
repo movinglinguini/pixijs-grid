@@ -1,9 +1,8 @@
 {
   "name": "pixijs-grid",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Utility class for creating a grid in pixijs",
-  "main": "index.js",
-
+  "main": "dist/pixijs-grid.mjs",
   "scripts": {
     "test": "browser-sync start --server . --files \"src/**/*.(js)\" --startPath=\"test/\"",
     "build": "node build-src/generate-module.cjs && rollup --config='build-src/rollup.config.js' --dir='dist'"
