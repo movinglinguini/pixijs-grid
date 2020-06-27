@@ -152,3 +152,10 @@ Gets the value given to the `width` constructor argument.
   get correctedWidth(): number
 ```
 Gets the smallest square number greater than `PixiJSGrid.originalWidth`. More specifically this is calculated by computing `Math.ceil(Math.sqrt(this._gridWidth)) ** 2`.
+
+
+#### onMouseMove
+```typescript
+  onMouseMove(evt: PIXI.InteractionData, gridCoords: { x: number, y: number }): void
+```
+Set this function to handle onMouse move events.

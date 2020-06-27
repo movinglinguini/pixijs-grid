@@ -69,6 +69,10 @@ class PixiJSGrid extends PIXI.Graphics {
     return this._correctedWidth;
   }
 
+  get useCorrectedWidth() {
+    return this._useCorrectedWidth;
+  }
+
   /**
    * The coordinates for each corner of the grid.
    * @returns {{ x1: number, y1: number, x2: number, y2: number}}
@@ -98,7 +102,7 @@ class PixiJSGrid extends PIXI.Graphics {
    */
   get gridWidth() {
     if (!this.useCorrectedWidth) { return this._gridWidth; }
-    return this.cellSize === Math.sqrt(this._correctedWidth) ? this._correctedWidth : this._gridWidth;
+    return Math.abs(this.cellSize - Math.sqrt(this._correctedWidth)) <= 1e-6 ? this._correctedWidth : this._gridWidth;
   }
 
   /**

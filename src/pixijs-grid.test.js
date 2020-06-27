@@ -15,7 +15,7 @@ describe('PIXI Grid', function() {
     if (testObjs.grid) {
       testObjs.grid.destroy();
     }
-
+    
     testObjs.grid = new PixiJSGrid(testObjs.gridWidth);
     testObjs.grid.x += 10;
     testObjs.grid.y += 10;
@@ -41,7 +41,7 @@ describe('PIXI Grid', function() {
 function describeGridProperties(testObjs) {
   describe('PIXI Grid Properties', () => {
     it('should have a "width" property', () => {
-      expect(testObjs.grid).to.have.property('width');
+       expect(testObjs.grid).to.have.property('width');
     });
 
     it('should have a "lineStyle" property', () => {
@@ -56,12 +56,13 @@ function describeGridProperties(testObjs) {
       expect(testObjs.grid.cellSize).to.equal(Math.sqrt(testObjs.correctedWidth));
     });
 
-    it(`should default to be ${Math.ceil(Math.sqrt(testObjs.correctedWidth))}`, () => {
+    it(`should default have the amount of lines default to be ${Math.ceil(Math.sqrt(testObjs.correctedWidth))}`, () => {
       expect(testObjs.grid.amtLines).to.equal(Math.ceil(Math.sqrt(testObjs.correctedWidth)));
     });
 
     it(`should have a grid width of ${testObjs.gridWidth} when the cell size is manually changed`, () => {
       testObjs.grid.cellSize = testObjs.gridWidth * .5;
+      testObjs.grid.drawGrid();
       expect(testObjs.grid.gridWidth).to.equal(testObjs.gridWidth);
     });
 
@@ -71,8 +72,8 @@ function describeGridProperties(testObjs) {
     });
 
     it(`should recalculate the line count after the cell division value has been changed`, () => {
-      testObjs.grid.cellSize = testObjs.gridWidth * .5;
-      expect(testObjs.grid.amtLines).to.equal(Math.floor(testObjs.correctedWidth / testObjs.grid.cellSize));
+      testObjs.grid.cellSize = 10;
+      expect(testObjs.grid.amtLines).to.equal(Math.floor(testObjs.gridWidth / 10));
     });
   });
 }
