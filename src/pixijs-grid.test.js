@@ -12,6 +12,10 @@ describe('PIXI Grid', function() {
     correctedWidth: Math.ceil(Math.sqrt(gridBB.width * .33)) ** 2,
   };
   beforeEach(() => {
+    if (testObjs.grid) {
+      testObjs.grid.destroy();
+    }
+
     testObjs.grid = new PixiJSGrid(testObjs.gridWidth);
     testObjs.grid.x += 10;
     testObjs.grid.y += 10;
@@ -26,22 +30,18 @@ describe('PIXI Grid', function() {
   describeGridProperties(testObjs);
   describeGridMethods(testObjs);
 
-  afterEach(() => {
-    testObjs.grid.cellSize = null;
-    testObjs.grid.clearGrid(false);
-    testObjs.grid.lineStyle(1, 0xffffff, 1, 0.5, true);
-    testObjs.grid.drawGrid();
-  });
+  // afterEach(() => {
+  //   testObjs.grid.cellSize = null;
+  //   testObjs.grid.clearGrid(false);
+  //   testObjs.grid.lineStyle(1, 0xffffff, 1, 0.5, true);
+  //   testObjs.grid.drawGrid();
+  // });
 });
 
 function describeGridProperties(testObjs) {
   describe('PIXI Grid Properties', () => {
     it('should have a "width" property', () => {
       expect(testObjs.grid).to.have.property('width');
-    });
-  
-    it('should have a "height" property', () => {
-      expect(testObjs.grid).to.have.property('height');
     });
 
     it('should have a "lineStyle" property', () => {
@@ -52,7 +52,7 @@ function describeGridProperties(testObjs) {
       expect(testObjs.grid).to.have.property('cellSize');
     });
 
-    it(`should default to a value close to ${testObjs.correctedWidth / Math.sqrt(testObjs.correctedWidth)} for "_cellSize"`, () => {
+    it(`should default to a value close to ${Math.sqrt(testObjs.correctedWidth)} for "_cellSize"`, () => {
       expect(testObjs.grid.cellSize).to.equal(Math.sqrt(testObjs.correctedWidth));
     });
 
@@ -60,9 +60,19 @@ function describeGridProperties(testObjs) {
       expect(testObjs.grid.amtLines).to.equal(Math.ceil(Math.sqrt(testObjs.correctedWidth)));
     });
 
+    it(`should have a grid width of ${testObjs.gridWidth} when the cell size is manually changed`, () => {
+      testObjs.grid.cellSize = testObjs.gridWidth * .5;
+      expect(testObjs.grid.gridWidth).to.equal(testObjs.gridWidth);
+    });
+
+    it(`should have the corrected width (${testObjs.correctedWidth}) when the cell size is at default`, () => {
+      testObjs.grid.cellSize = null;
+      expect(testObjs.grid.gridWidth).to.equal(testObjs.correctedWidth);
+    });
+
     it(`should recalculate the line count after the cell division value has been changed`, () => {
-      testObjs.grid.cellSize = 10;
-      expect(testObjs.grid.amtLines.toFixed(5)).to.equal((testObjs.correctedWidth / 10).toFixed(5));
+      testObjs.grid.cellSize = testObjs.gridWidth * .5;
+      expect(testObjs.grid.amtLines).to.equal(Math.floor(testObjs.correctedWidth / testObjs.grid.cellSize));
     });
   });
 }
@@ -94,10 +104,11 @@ function describeGridMethods(testObjs) {
     });
 
     it('should retain the same line color after "clear grid"', () => {
-      testObjs.grid.lineStyle(1, 0xff0000);
+      const lineColor = 0xff0000;
+      testObjs.grid.lineStyle(1, lineColor);
       testObjs.grid.drawGrid();
       testObjs.grid.clearGrid();
-      expect(testObjs.grid.line.color).to.equal(0xff0000);
+      expect(testObjs.grid.line.color).to.equal(lineColor);
     });
     
     it('should return cell (0, 0)', () => {

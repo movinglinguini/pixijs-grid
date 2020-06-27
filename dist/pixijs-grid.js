@@ -8,7 +8,7 @@ const DEFAULT_LINE_STYLE = {
   alpha: 1,
   alignment: 0.5,
   native: true,
-}
+};
 
 /**
  * @description Utility class that draws a grid on the screen.
@@ -70,34 +70,11 @@ class PixiJSGrid extends PIXI.Graphics {
   }
 
   /**
-   * The coordinates for each corner of the grid.
-   * @returns {{ x1: number, y1: number, x2: number, y2: number}}
-   * The leftmost (**x1**), topmost (**y1**), rightmost (**x2**), and bottommost (**y2**) coordinates.
-   */
-  get bounds() {
-    return {
-      x1: this.x,
-      y1: this.y,
-      x2: this.x + this._correctedWidth,
-      y2: this.y + this._correctedWidth,
-    }
-  }
-
-  set drawBoundaries(drawBoundaries) {
-    this._drawBoundaries = drawBoundaries;
-  }
-
-  get drawBoundaries() {
-    return this._drawBoundaries;
-  }
-
-  /**
    * The actual width of the grid.
    * When the `cellSize` is not the default, the width of the grid will be the
    * width given in the `width` constructor. Otherwise, it is the corrected width.
    */
   get gridWidth() {
-    if (!this.useCorrectedWidth) { return this._gridWidth; }
     return this.cellSize === Math.sqrt(this._correctedWidth) ? this._correctedWidth : this._gridWidth;
   }
 
@@ -106,7 +83,7 @@ class PixiJSGrid extends PIXI.Graphics {
     * @param {number} width number. Required.
     * 
     * The target sidelength of the grid. It is best for `width` to be a perfect square (i.e., 2, 4, 9, 16, 25, etc.). If
-    * not and the parameter `useCorrectedWidth` is set to **false**, then the grid will use a corrected width,
+    * not and the parameter `doCorrectWidth` is set to **false**, then the grid will use a corrected width,
     * which is the smallest perfect square greater than `width`.
     * 
     * @param {number} cellSize number, null. Optional, default: square root of corrected width
@@ -114,7 +91,7 @@ class PixiJSGrid extends PIXI.Graphics {
     * The size of each cell in the grid.
     * If the value is **null**, the grid will use the default value.
     * 
-    * @param {{ width: number, color: number, alpha: number, alignment: number, native: boolean }}. Object. Optional. 
+    * @param {{ width: number, color: number, alpha: number, alignment: number, native: boolean }} lineStyle. Object. Optional. 
     * 
     *  default:
     *  **{
@@ -127,7 +104,7 @@ class PixiJSGrid extends PIXI.Graphics {
     *  
     * Configuration for the line style on the object. See documentation on `PIXI.Graphics` for more on the `LineStyle` class.
     * 
-    * @param {boolean} useCorrectedWidth boolean. Optional. default: **true**
+    * @param {boolean} doCorrectWidth boolean. Optional. default: **true**
     * If **true**, the grid will use the smallest perfect square greater than `width`.
     * Otherwise, the grid will use the exact value given by `width`.
     * 
@@ -138,8 +115,8 @@ class PixiJSGrid extends PIXI.Graphics {
   constructor(
     width,
     cellSize=null,
-    lineConfig = null,
-    useCorrectedWidth = true,
+    lineStyle = null,
+    doCorrectWidth = true,
     drawBoundaries = true,
   ) {
     super();
@@ -148,7 +125,7 @@ class PixiJSGrid extends PIXI.Graphics {
     this._amtLines = null;
     
     this._gridWidth = width;
-    this._useCorrectedWidth = useCorrectedWidth;
+    this._doCorrectWidth = doCorrectWidth;
     this._correctedWidth = null;
     this._correctWidth(width);
 
@@ -156,7 +133,7 @@ class PixiJSGrid extends PIXI.Graphics {
 
     this.cellSize = cellSize;
     
-    const lConfig = { ...DEFAULT_LINE_STYLE, ...(lineConfig || {} )};
+    const lConfig = { ...DEFAULT_LINE_STYLE, ...(lineStyle || {} )};
     this.lineStyle(
       lConfig.width,
       lConfig.color,
@@ -192,11 +169,11 @@ class PixiJSGrid extends PIXI.Graphics {
 
       // draw the column
       this.moveTo(startCoord, 0);
-      this.lineTo(startCoord, this._correctedWidth);
+      this.lineTo(startCoord, this.gridWidth);
 
       // draw the row
       this.moveTo(0, startCoord);
-      this.lineTo(this._correctedWidth, startCoord);
+      this.lineTo(this.gridWidth, startCoord);
     }
     this.endFill();
 
@@ -248,14 +225,9 @@ class PixiJSGrid extends PIXI.Graphics {
   onMousemove(evt, gridCoords) {}
 
   /**
-   * Calculates the corrected width. If the `useCorrectedWidth` constructor parameter is set to **false**,
-   * then it simply keeps the given value for `width` as the corrected width.
+   * Calculates the corrected width.
    */
   _correctWidth() {
-    if (!this._useCorrectedWidth) {
-      this._correctedWidth = this._gridWidth;
-    }
-
     this._correctedWidth = Math.ceil(Math.sqrt(this._gridWidth)) ** 2;
   }
 }

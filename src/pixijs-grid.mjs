@@ -30,43 +30,7 @@ class PixiJSGrid extends PIXI.Graphics {
    * The amount of equally spaced lines along the grid's side.
    */
   get amtLines() {
-    return Math.floor(this.gridWidth / this.cellSize);
-  }
-
-  /**
-   * The coordinates for each corner of the grid.
-   * The leftmost (**x1**), topmost (**y1**), rightmost (**x2**), and bottommost (**y2**) coordinates.
-   */
-  get bounds() {
-    return {
-      x1: this.x,
-      y1: this.y,
-      x2: this.x + this._correctedWidth,
-      y2: this.y + this._correctedWidth,
-    }
-  }
-
-  set drawBoundaries(drawBoundaries) {
-    this._drawBoundaries = drawBoundaries;
-  }
-
-  get drawBoundaries() {
-    return this._drawBoundaries;
-  }
-
-  /**
-   * The requested width of the grid given by the `width` constructor parameter.
-   */
-  get originalWidth() {
-    return this._gridWidth;
-  }
-
-  /**
-   * The corrected width of the grid, which is the smallest square root number larger than
-   * the corrected width.
-   */
-  get correctedWidth() {
-    return this._correctedWidth;
+    return this._correctedWidth / this.cellSize;
   }
 
   /**
@@ -92,13 +56,11 @@ class PixiJSGrid extends PIXI.Graphics {
   }
 
   /**
-   * The actual width of the grid.
-   * When the `cellSize` is not the default, the width of the grid will be the
-   * width given in the `width` constructor. Otherwise, it is the corrected width.
+   * The width of the grid.
+   * @returns {number}
    */
   get gridWidth() {
-    if (!this.useCorrectedWidth) { return this._gridWidth; }
-    return this.cellSize === Math.sqrt(this._correctedWidth) ? this._correctedWidth : this._gridWidth;
+    return this._correctedWidth;
   }
 
   /**
@@ -106,7 +68,7 @@ class PixiJSGrid extends PIXI.Graphics {
     * @param {number} width number. Required.
     * 
     * The target sidelength of the grid. It is best for `width` to be a perfect square (i.e., 2, 4, 9, 16, 25, etc.). If
-    * not and the parameter `useCorrectedWidth` is set to **false**, then the grid will use a corrected width,
+    * not and the parameter `doCorrectWidth` is set to **false**, then the grid will use a corrected width,
     * which is the smallest perfect square greater than `width`.
     * 
     * @param {number} cellSize number, null. Optional, default: square root of corrected width
@@ -127,7 +89,7 @@ class PixiJSGrid extends PIXI.Graphics {
     *  
     * Configuration for the line style on the object. See documentation on `PIXI.Graphics` for more on the `LineStyle` class.
     * 
-    * @param {boolean} useCorrectedWidth boolean. Optional. default: **true**
+    * @param {boolean} doCorrectWidth boolean. Optional. default: **true**
     * If **true**, the grid will use the smallest perfect square greater than `width`.
     * Otherwise, the grid will use the exact value given by `width`.
     * 
@@ -139,7 +101,7 @@ class PixiJSGrid extends PIXI.Graphics {
     width,
     cellSize=null,
     lineConfig = null,
-    useCorrectedWidth = true,
+    doCorrectWidth = true,
     drawBoundaries = true,
   ) {
     super();
@@ -148,7 +110,7 @@ class PixiJSGrid extends PIXI.Graphics {
     this._amtLines = null;
     
     this._gridWidth = width;
-    this._useCorrectedWidth = useCorrectedWidth;
+    this._doCorrectWidth = doCorrectWidth;
     this._correctedWidth = null;
     this._correctWidth(width);
 
@@ -248,14 +210,15 @@ class PixiJSGrid extends PIXI.Graphics {
   onMousemove(evt, gridCoords) {}
 
   /**
-   * Calculates the corrected width. If the `useCorrectedWidth` constructor parameter is set to **false**,
+   * Calculates the corrected width. If the `doCorrectWidth` constructor parameter is set to **false**,
    * then it simply keeps the given value for `width` as the corrected width.
    */
   _correctWidth() {
-    if (!this._useCorrectedWidth) {
+    if (!this._doCorrectWidth) {
       this._correctedWidth = this._gridWidth;
     }
 
     this._correctedWidth = Math.ceil(Math.sqrt(this._gridWidth)) ** 2;
   }
 }
+export { PixiJSGrid };
