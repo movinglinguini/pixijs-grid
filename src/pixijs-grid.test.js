@@ -10,7 +10,9 @@ describe('PIXI Grid', function() {
   const testObjs = {
     gridWidth: gridBB.width * .33,
     correctedWidth: Math.ceil(Math.sqrt(gridBB.width * .33)) ** 2,
+    grid: null,
   };
+
   beforeEach(() => {
     if (testObjs.grid) {
       testObjs.grid.destroy();
@@ -62,7 +64,6 @@ function describeGridProperties(testObjs) {
 
     it(`should have a grid width of ${testObjs.gridWidth} when the cell size is manually changed`, () => {
       testObjs.grid.cellSize = testObjs.gridWidth * .5;
-      testObjs.grid.drawGrid();
       expect(testObjs.grid.gridWidth).to.equal(testObjs.gridWidth);
     });
 
@@ -80,19 +81,19 @@ function describeGridProperties(testObjs) {
 
 function describeGridMethods(testObjs) {
   describe('PIXI Grid Methods', () => {
-    it('should have a function called "drawGrid"', () => {
+    it('should have a method called "drawGrid" to draw the grid on the screen', () => {
       expect(testObjs.grid).to.respondTo('drawGrid');
     });
 
-    it('should have a function called "clearGrid"', () => {
+    it('should have a method called "clearGrid" to clear the grid from the screen', () => {
       expect(testObjs.grid).to.respondTo('clearGrid');
     });
 
-    it('should have a function called "on" for event listening', () => {
+    it('should have a method called "on" for event listening', () => {
       expect(testObjs.grid).to.respondTo('on');
     });
 
-    it('should have a function called "getCellCoordinates"', () => {
+    it('should have a method called "getCellCoordinates" for transforming global coordinates into grid cell coordinates', () => {
       expect(testObjs.grid).to.respondTo('getCellCoordinates');
     });
 
